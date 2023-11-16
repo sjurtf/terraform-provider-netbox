@@ -52,6 +52,8 @@ Read-Only:
 - `model` (String)
 - `name` (String)
 - `platform_id` (Number)
+- `primary_ipv4` (String)
+- `primary_ipv6` (String)
 - `rack_face` (String)
 - `rack_id` (Number)
 - `rack_position` (Number)

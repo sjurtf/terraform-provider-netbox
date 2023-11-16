@@ -138,10 +138,12 @@ func Provider() *schema.Provider {
 			"netbox_inventory_item":             resourceNetboxInventoryItem(),
 			"netbox_webhook":                    resourceNetboxWebhook(),
 			"netbox_custom_field_choice_set":    resourceNetboxCustomFieldChoiceSet(),
+			"netbox_virtual_chassis":            resourceNetboxVirtualChassis(),
 		},
 		DataSourcesMap: map[string]*schema.Resource{
 			"netbox_asn":               dataSourceNetboxAsn(),
 			"netbox_asns":              dataSourceNetboxAsns(),
+			"netbox_available_prefix":  dataSourceNetboxAvailablePrefix(),
 			"netbox_cluster":           dataSourceNetboxCluster(),
 			"netbox_cluster_group":     dataSourceNetboxClusterGroup(),
 			"netbox_cluster_type":      dataSourceNetboxClusterType(),
@@ -162,6 +164,7 @@ func Provider() *schema.Provider {
 			"netbox_site":              dataSourceNetboxSite(),
 			"netbox_location":          dataSourceNetboxLocation(),
 			"netbox_tag":               dataSourceNetboxTag(),
+			"netbox_tags":              dataSourceNetboxTags(),
 			"netbox_virtual_machines":  dataSourceNetboxVirtualMachine(),
 			"netbox_interfaces":        dataSourceNetboxInterfaces(),
 			"netbox_device_interfaces": dataSourceNetboxDeviceInterfaces(),
@@ -275,14 +278,13 @@ func providerConfigure(ctx context.Context, data *schema.ResourceData) (interfac
 	if !skipVersionCheck {
 		req := status.NewStatusListParams()
 		res, err := netboxClient.Status.StatusList(req, nil)
-
 		if err != nil {
 			return nil, diag.FromErr(err)
 		}
 
 		netboxVersion := res.GetPayload().(map[string]interface{})["netbox-version"].(string)
 
-		supportedVersions := []string{"3.6.0", "3.6.1", "3.6.2", "3.6.3"}
+		supportedVersions := []string{"3.6.0", "3.6.1", "3.6.2", "3.6.3", "3.6.4", "3.6.5"}
 
 		if !slices.Contains(supportedVersions, netboxVersion) {
 			// Currently, there is no way to test these warnings. There is an issue to track this: https://github.com/hashicorp/terraform-plugin-sdk/issues/864

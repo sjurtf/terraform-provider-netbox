@@ -2,7 +2,7 @@ TEST?=netbox/*.go
 GOFMT_FILES?=$$(find . -name '*.go' |grep -v vendor)
 DOCKER_COMPOSE=docker-compose
 
-export NETBOX_VERSION=v3.6.3
+export NETBOX_VERSION=v3.6.5
 export NETBOX_SERVER_URL=http://localhost:8001
 export NETBOX_API_TOKEN=0123456789abcdef0123456789abcdef01234567
 export NETBOX_TOKEN=$(NETBOX_API_TOKEN)
@@ -13,7 +13,7 @@ default: testacc
 .PHONY: testacc
 testacc: docker-up
 	@echo "⌛ Startup acceptance tests on $(NETBOX_SERVER_URL) with version $(NETBOX_VERSION)"
-	TF_ACC=1 go test -v -cover $(TEST)
+	TF_ACC=1 go test -timeout 20m -v -cover $(TEST)
 
 .PHONY: test
 test:
